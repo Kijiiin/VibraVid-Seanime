@@ -219,12 +219,11 @@ function init() {
 								? urlBuilders.vibravid({} as $quickaccess.MappingData, data.type, title) ?? ""
 								: urlBuilders[key as keyof typeof quicklinks](mappingdata as $quickaccess.MappingData, data.type, title) ?? "";
 						const icon = icons.get(key as keyof typeof quicklinks, { raw: true });
-						const elId = quicklinkDomIds[key as keyof typeof quicklinks];
-						const existingElId = $(`#${elId}`).attr("id");
+						const existingEl = await ctx.dom.queryOne(`[data-quickaccess-key="${key}"]`);
 
-						if (existingElId) {
-							ctx.dom.asElement(existingElId).setAttribute("href", href);
-							ctx.dom.asElement(existingElId).setProperty("className", href.length ? [] : ["cursor-not-allowed pointer-events-none"]);
+						if (existingEl) {
+							existingEl.setAttribute("href", href);
+							existingEl.setProperty("className", href.length ? [] : ["cursor-not-allowed pointer-events-none"]);
 							continue;
 						}
 
