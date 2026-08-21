@@ -8,7 +8,7 @@
 	"description": "Adds a Quick Access button to open the current anime in VibraVid.",
 	"author": "Kijiiin",
 	"lang": "it",
-	"payloadURI": "https://Kijiiin/VibraVid-Seanime/plugins/VibraVid-Seanime/provider.ts",
+	"payloadURI": "https://raw.githubusercontent.com/Kijiiin/VibraVid-Seanime/refs/heads/main/plugins/VibraVid/provider.ts",
 	"plugin": {
 		"version": "1",
 		"permissions": {
