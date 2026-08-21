@@ -6,7 +6,6 @@
 // @ts-ignore
 function init() {
 	$ui.register((ctx) => {
-
 		ctx.dom.observe(
 			"[data-anime-entry-page]",
 			async (els) => {
@@ -14,14 +13,12 @@ function init() {
 					const el = els[0];
 					if (!el) return;
 
-					// Recupera i dati dell'anime corrente
 					const data: $app.AL_BaseAnime = JSON.parse(
 						(await el.getDataAttribute("media")) ?? "{}"
 					);
 
 					if (!data.id) return;
 
-					// Titolo preferito da usare per la ricerca VibraVid
 					const title =
 						data.title?.userPreferred ||
 						data.title?.english ||
@@ -34,7 +31,6 @@ function init() {
 
 					const $ = LoadDoc(el.innerHTML ?? "");
 
-					// Contenitore dei pulsanti dell'anime
 					const btnALId = $(
 						"[data-anime-meta-section-buttons-container] a"
 					).attr("id");
@@ -46,56 +42,64 @@ function init() {
 						return;
 					}
 
-					// Evita duplicati
 					const existing = $(
 						'[data-vibravid-seanime="true"]'
 					).attr("id");
 
 					if (existing) return;
 
-					/*
-					 * Protocollo personalizzato.
-					 *
-					 * Esempio:
-					 * VibraVid-Seanime://One Piece
-					 */
-					const href =
-						`VibraVid-Seanime://${title}`;
+					const button = await ctx.dom.createElement("button");
 
-					const button = await ctx.dom.createElement("a");
+					button.setAttribute(
+						"type",
+						"button"
+					);
 
-					button.setAttribute("href", href);
-					button.setAttribute("target", "_blank");
+					button.setAttribute(
+						"title",
+						"Apri con VibraVid"
+					);
+
 					button.setAttribute(
 						"data-vibravid-seanime",
 						"true"
 					);
 
 					button.setInnerHTML(/*html*/ `
-						<button
-							type="button"
-							title="Apri con VibraVid"
-							class="UI-Button_root whitespace-nowrap font-semibold rounded-lg inline-flex items-center transition ease-in text-center justify-center focus-visible:outline-none focus-visible:ring-2 ring-offset-1 ring-offset-[--background] focus-visible:ring-[--ring] disabled:opacity-50 disabled:pointer-events-none shadow-none text-[--gray] border border-transparent bg-transparent hover:underline active:text-gray-700 dark:text-gray-300 dark:active:text-gray-200 UI-IconButton_root p-0 flex-none text-xl h-8 w-8 px-0"
-						>
-							<span class="md:inline-block">
-								<div class="w-5 h-5">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 24 24"
-										fill="currentColor"
-									>
-										<path d="M8 5v14l11-7z"/>
-									</svg>
-								</div>
-							</span>
-						</button>
+						<span class="md:inline-block">
+							<div class="w-5 h-5">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 24 24"
+									fill="currentColor"
+								>
+									<path d="M8 5v14l11-7z"/>
+								</svg>
+							</div>
+						</span>
 					`);
 
-					// Inserisce il pulsante dopo AniList
+					// Click sul pulsante
+					button.addEventListener("click", () => {
+						const protocolUrl =
+							`VibraVid-Seanime://${title}`;
+
+						$debug.log(
+							`VibraVid-Seanime: apertura ${protocolUrl}`
+						);
+
+						window.location.href = protocolUrl;
+					});
+
+					button.setAttribute(
+						"class",
+						"UI-Button_root whitespace-nowrap font-semibold rounded-lg inline-flex items-center transition ease-in text-center justify-center focus-visible:outline-none focus-visible:ring-2 ring-offset-1 ring-offset-[--background] focus-visible:ring-[--ring] disabled:opacity-50 disabled:pointer-events-none shadow-none text-[--gray] border border-transparent bg-transparent hover:underline active:text-gray-700 dark:text-gray-300 dark:active:text-gray-200 UI-IconButton_root p-0 flex-none text-xl h-8 w-8 px-0"
+					);
+
 					ctx.dom.asElement(btnALId).after(button);
 
 					$debug.log(
-						`VibraVid-Seanime: ${title} -> ${href}`
+						`VibraVid-Seanime: pulsante creato per "${title}"`
 					);
 
 				} catch (error) {
@@ -106,8 +110,8 @@ function init() {
 			},
 			{
 				withInnerHTML: true,
-				identifyChildren: true,
-			},
+				identifyChildren: true
+			}
 		);
 	});
 }
