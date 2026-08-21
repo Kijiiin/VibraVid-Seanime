@@ -193,6 +193,9 @@ function init() {
 				if (!el) return;
 
 				const data: $app.AL_BaseAnime | $app.AL_BaseManga = JSON.parse((await el.getDataAttribute("media")) ?? "{}");
+				const renderedFor = `${data.type}:${data.id}`;
+				if ((await el.getAttribute("data-quickaccess-rendered-for")) === renderedFor) return;
+				el.setAttribute("data-quickaccess-rendered-for", renderedFor);
 				const $ = LoadDoc(el.innerHTML ?? "");
 				const title = data.title?.userPreferred ?? data.title?.romaji ?? data.title?.english ?? data.title?.native;
 
